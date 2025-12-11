@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Barangay RFID Logs</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+</head>
+<body>
+  <h1>Barangay Access Logs</h1>
+  <ul id="logs"></ul>
+
+  <script>
+    const config = {
+      apiKey: "AIzaSyC...",
+      databaseURL: "https://your-project-id-default-rtdb.firebaseio.com"
+    };
+    firebase.initializeApp(config);
+    const db = firebase.database();
+
+    db.ref('logs').orderByKey().limitToLast(20).on('child_added', (snap) => {
+      const d = snap.val();
+      const li = document.createElement('li');
+      li.innerHTML = `<b>${d.name}</b> (${d.position})<br>
+                      UID: ${d.uid} | ${d.granted ? '✅' : '❌'} | 
+                      ${new Date(d.timestamp * 1000).toLocaleString()}`;
+      document.getElementById('logs').prepend(li);
+    });
+  </script>
+</body>
+</html>
